@@ -26,12 +26,12 @@ public class GenerateMap {
         return map;
     }
 
-    private static String ofGetToProperty(String name) {
+    public static String ofGetToProperty(String name) {
         return name.substring(3, 4).toLowerCase() +
                 name.substring(4);
     }
 
-    private static boolean isGetter(Method method) {
+    public static boolean isGetter(Method method) {
         return method.getName().startsWith("get") &&
                 method.getReturnType() != void.class &&
                 method.getParameterTypes().length == 0 &&
