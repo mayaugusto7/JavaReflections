@@ -12,11 +12,16 @@ public class GenerateMap {
         Class<?> classe = o.getClass();
         Map<String, Object> map = new HashMap<>();
         for (Method method : classe.getDeclaredMethods()) {
-                if (isGetter(method)) {
-                    String property = ofGetToProperty(method.getName());
-                    Object value = method.invoke(o);
-                    map.put(property, value);
+            if (isGetter(method)) {
+                String property = null;
+                if (method.isAnnotationPresent(PropertyName.class)) {
+                    property = method.getAnnotation(PropertyName.class).value();
+                } else {
+                    property = ofGetToProperty(method.getName());
                 }
+                Object value = method.invoke(o);
+                map.put(property, value);
+            }
         }
         return map;
     }
@@ -29,6 +34,7 @@ public class GenerateMap {
     private static boolean isGetter(Method method) {
         return method.getName().startsWith("get") &&
                 method.getReturnType() != void.class &&
-                method.getParameterTypes().length == 0;
+                method.getParameterTypes().length == 0 &&
+                !method.isAnnotationPresent(Ignore.class);
     }
 }
